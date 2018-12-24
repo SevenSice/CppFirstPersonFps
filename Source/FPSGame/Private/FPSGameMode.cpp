@@ -4,7 +4,7 @@
 #include "FPSHUD.h"
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "Engine/Classes/Kismet/GameplayStatics.h"
 AFPSGameMode::AFPSGameMode()
 {
 	// set default pawn class to our Blueprinted character
@@ -20,8 +20,35 @@ void AFPSGameMode::CompleteMission(APawn *InstigatorPawn)
 	if (InstigatorPawn)
 	{
 		InstigatorPawn->DisableInput(nullptr);
+
+		if (SpactatingViewPointClass != nullptr)
+		{
+			TArray<AActor*> ReturnedActors;
+			//获取世界中的摄像机对象
+			UGameplayStatics::GetAllActorsOfClass(this, SpactatingViewPointClass, ReturnedActors);
+
+			//发现有效的actor，就改变视角
+			if (ReturnedActors.Num() > 0)
+			{
+				AActor *NewViewTarget = ReturnedActors[0];
+
+				//获得玩家控制器
+				APlayerController *PC = Cast<APlayerController>(InstigatorPawn->GetController());
+				if (PC != nullptr)
+				{
+					PC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp,Warning,TEXT("SpactatingViewPointClass is nullptr. Please update GameMode class valid subclass. can not change spectating view target."))
+		}
+
 	}
 	OnMissionCompleted(InstigatorPawn);
+
+	
 }
 
 	

@@ -32,7 +32,7 @@ AFPSCharacter::AFPSCharacter()
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// set up gameplay key bindings
+	// set up game play key bindings
 	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);

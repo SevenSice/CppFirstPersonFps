@@ -25,8 +25,20 @@ protected:
 	UPROPERTY(VisibleAnywhere,Category="Components")
 	UPawnSensingComponent *PawnSensingComp;
 
+	FRotator OriginalRotation = FRotator(0, 0, 0);
+
+	FTimerHandle TimerHandle_ResetOrientation;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn *SeenPawn);
+
+	//Instigator命名为NoiseInstigator，不然会与Actor里面的Instigator属性冲突。
+	UFUNCTION()
+	void OnNoiseHear(APawn* NoiseInstigator, const FVector& Location, float Volume);
+
+	//重置角色朝向
+	UFUNCTION()
+	void ResetOrientation();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

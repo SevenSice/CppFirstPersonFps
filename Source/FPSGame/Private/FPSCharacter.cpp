@@ -51,11 +51,9 @@ void AFPSCharacter::Fire()
 	// try and fire a projectile
 	if (ProjectileClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is exist !"));
 		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
 		FRotator MuzzleRotation = GunMeshComponent->GetSocketRotation("Muzzle");
-		UE_LOG(LogTemp, Warning, TEXT("Location:%s"),*MuzzleLocation.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Rotation:%s"), *MuzzleRotation.ToString());
+
 	
 		//Set Spawn Collision Handling Override
 		FActorSpawnParameters ActorSpawnParams;

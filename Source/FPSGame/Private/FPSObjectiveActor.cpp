@@ -9,8 +9,6 @@
 // Sets default values
 AFPSObjectiveActor::AFPSObjectiveActor()
 {
-
-
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	RootComponent = MeshComp;
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);

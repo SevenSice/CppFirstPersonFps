@@ -32,7 +32,7 @@ AFPSCharacter::AFPSCharacter()
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// set up game play key bindings
+	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
@@ -51,15 +51,22 @@ void AFPSCharacter::Fire()
 	// try and fire a projectile
 	if (ProjectileClass)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is exist !"));
 		FVector MuzzleLocation = GunMeshComponent->GetSocketLocation("Muzzle");
 		FRotator MuzzleRotation = GunMeshComponent->GetSocketRotation("Muzzle");
-
+		UE_LOG(LogTemp, Warning, TEXT("Location:%s"),*MuzzleLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Rotation:%s"), *MuzzleRotation.ToString());
+	
 		//Set Spawn Collision Handling Override
 		FActorSpawnParameters ActorSpawnParams;
-		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// spawn the projectile at the muzzle
 		GetWorld()->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is null !"));
 	}
 
 	// try and play the sound if specified

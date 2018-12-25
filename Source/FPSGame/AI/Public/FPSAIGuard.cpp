@@ -4,6 +4,7 @@
 #include "AIModule/Classes/Perception/PawnSensingComponent.h"
 #include "Engine/Public/DrawDebugHelpers.h"
 #include "Engine/Public/TimerManager.h"
+#include "FPSGameMode.h"
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
 {
@@ -32,6 +33,14 @@ void AFPSAIGuard::OnPawnSeen(APawn *SeenPawn)
 	}
 	//画出圆形区域，半径32，距离12，颜色黄色，最后射线（持久谱线）否，持续时长10秒。
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+
+	//被NPC看到，就立即失败。
+	AFPSGameMode *GM = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
+	//判断gamemode是否可用
+	if (GM)
+	{
+		GM->CompleteMission(SeenPawn, false);
+	}
 }
 
 //Instigator命名为NoiseInstigator，不然会与Actor里面的Instigator属性冲突。

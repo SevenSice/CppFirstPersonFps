@@ -8,6 +8,13 @@
 
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class EAIState :uint8
+{
+	Idle,
+	Suspicious,
+	Alerted
+};
 
 UCLASS()
 class FPSGAME_API AFPSAIGuard : public ACharacter
@@ -22,25 +29,44 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere,Category="Components")
-	UPawnSensingComponent *PawnSensingComp;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+		UPawnSensingComponent *PawnSensingComp;
 
 	FRotator OriginalRotation = FRotator(0, 0, 0);
 
 	FTimerHandle TimerHandle_ResetOrientation;
 
 	UFUNCTION()
-	void OnPawnSeen(APawn *SeenPawn);
+		void OnPawnSeen(APawn *SeenPawn);
 
 	//Instigator命名为NoiseInstigator，不然会与Actor里面的Instigator属性冲突。
 	UFUNCTION()
-	void OnNoiseHear(APawn* NoiseInstigator, const FVector& Location, float Volume);
+		void OnNoiseHear(APawn* NoiseInstigator, const FVector& Location, float Volume);
 
 	//重置角色朝向
 	UFUNCTION()
-	void ResetOrientation();
-public:	
+		void ResetOrientation();
+
+	EAIState GuardState = EAIState::Idle;
+	void SetGuardState(EAIState NewState);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
+		void OnStateChanged(EAIState NewState);
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	UPROPERTY(EditInstanceOnly, Category = "AI")
+		bool bPatrol = false;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+		AActor *FirstPatrolPoint = nullptr;
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+		AActor *SecondPatrolPoint = nullptr;
+	//角色正在移动或者停止的当前的点
+	UPROPERTY()
+		AActor *CurrentPatrolPoint = nullptr;
+	
+	void MoveToNextPatrolPoint();
 };
